@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="module_hackerrank" default="compile.module.hackerrank">
+  <dirname property="module.hackerrank.basedir" file="${ant.file.module_hackerrank}"/>
+  
+  <property name="module.jdk.home.hackerrank" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.hackerrank" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.hackerrank" value="${project.jdk.classpath}"/>
+  
+  <property name="compiler.args.hackerrank" value="-encoding UTF-8 -source 9 -target 9 ${compiler.args}"/>
+  
+  <property name="hackerrank.output.dir" value="${module.hackerrank.basedir}/../../target/scala-2.12/classes"/>
+  <property name="hackerrank.testoutput.dir" value="${module.hackerrank.basedir}/../../target/scala-2.12/test-classes"/>
+  
+  <path id="hackerrank.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="hackerrank.module.production.classpath">
+    <path refid="${module.jdk.classpath.hackerrank}"/>
+    <path refid="library.sbt:_org.scala-lang:scala-library:2.12.8:jar.classpath"/>
+  </path>
+  
+  <path id="hackerrank.runtime.production.module.classpath">
+    <pathelement location="${hackerrank.output.dir}"/>
+    <path refid="library.sbt:_org.scala-lang:scala-library:2.12.8:jar.classpath"/>
+  </path>
+  
+  <path id="hackerrank.module.classpath">
+    <path refid="${module.jdk.classpath.hackerrank}"/>
+    <pathelement location="${hackerrank.output.dir}"/>
+    <path refid="library.sbt:_org.scala-lang:scala-library:2.12.8:jar.classpath"/>
+    <path refid="library.sbt:_org.scalatest:scalatest_2.12:3.0.5:jar.classpath"/>
+    <path refid="library.sbt:_org.scalactic:scalactic_2.12:3.0.5:jar.classpath"/>
+    <path refid="library.sbt:_org.scala-lang.modules:scala-xml_2.12:1.0.6:jar.classpath"/>
+    <path refid="library.sbt:_org.scala-lang:scala-reflect:2.12.8:jar.classpath"/>
+  </path>
+  
+  <path id="hackerrank.runtime.module.classpath">
+    <pathelement location="${hackerrank.testoutput.dir}"/>
+    <pathelement location="${hackerrank.output.dir}"/>
+    <path refid="library.sbt:_org.scala-lang:scala-library:2.12.8:jar.classpath"/>
+    <path refid="library.sbt:_org.scalatest:scalatest_2.12:3.0.5:jar.classpath"/>
+    <path refid="library.sbt:_org.scalactic:scalactic_2.12:3.0.5:jar.classpath"/>
+    <path refid="library.sbt:_org.scala-lang.modules:scala-xml_2.12:1.0.6:jar.classpath"/>
+    <path refid="library.sbt:_org.scala-lang:scala-reflect:2.12.8:jar.classpath"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.hackerrank">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.hackerrank">
+    <patternset refid="excluded.from.module.hackerrank"/>
+  </patternset>
+  
+  <path id="hackerrank.module.sourcepath">
+    <dirset dir="${module.hackerrank.basedir}/../../../HackerRank">
+      <include name="src/main/scala"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.hackerrank" depends="compile.module.hackerrank.production,compile.module.hackerrank.tests" description="Compile module HackerRank"/>
+  
+  <target name="compile.module.hackerrank.production" depends="register.custom.compilers" description="Compile module HackerRank; production classes">
+    <mkdir dir="${hackerrank.output.dir}"/>
+    <javac2 destdir="${hackerrank.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.hackerrank}/javac">
+      <compilerarg line="${compiler.args.hackerrank}"/>
+      <bootclasspath refid="hackerrank.module.bootclasspath"/>
+      <classpath refid="hackerrank.module.production.classpath"/>
+      <src refid="hackerrank.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.hackerrank"/>
+    </javac2>
+    
+    <copy todir="${hackerrank.output.dir}">
+      <fileset dir="${module.hackerrank.basedir}/../../src/main/scala">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.hackerrank.tests" depends="register.custom.compilers,compile.module.hackerrank.production" description="compile module HackerRank; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.hackerrank" description="cleanup module">
+    <delete dir="${hackerrank.output.dir}"/>
+    <delete dir="${hackerrank.testoutput.dir}"/>
+  </target>
+</project>
